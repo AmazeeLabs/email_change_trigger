@@ -1,0 +1,4 @@
+name = Email Change Trigger
+description = "Create a trigger when and email address is changed."
+core = 7.x
+dependencies[] = trigger
