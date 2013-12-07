@@ -43,7 +43,6 @@ function email_change_trigger_help($path, $arg) {
  */
 function email_change_trigger_user_update(&$edit, $account, $category) {
   if ($category == 'account') {
-    dpm($account);
     if ($account->mail !== $account->original->mail) {
       email_change_trigger_change($account->mail, user_preferred_language($account));
     }
