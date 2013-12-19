@@ -44,7 +44,7 @@ function email_change_trigger_help($path, $arg) {
 function email_change_trigger_user_update(&$edit, $account, $category) {
   if ($category == 'account') {
     if ($account->mail !== $account->original->mail) {
-      email_change_trigger_change($account->mail, user_preferred_language($account));
+      email_change_trigger_change($account, user_preferred_language($account));
     }
   }
 }
@@ -66,9 +66,9 @@ function email_change_trigger_trigger_info() {
 }
 
 /**
- * Runs actions associated with updating passwords.
+ * Runs actions associated with updating user email address.
  */
-function email_change_trigger_password_trigger($recipient) {
+function email_change_trigger_email_change_trigger($recipient) {
   // Ask the trigger module for all actions enqueued for the
   // 'email_change_trigger' trigger.
   $aids = trigger_get_assigned_actions('email_change_trigger');
@@ -216,9 +216,15 @@ function email_change_trigger_send_email_action($entity, $context) {
       $context['node'] = $entity;
     }
 
-    $recipient = $context['recipient'];
+    $recipient = $context['recipient']->mail;
 
     $recipient_account = user_load_by_mail($recipient);
+
+    // change the email address if this is going to the old account.
+    if ($type == 'old_email') {
+      $recipient = $context['recipient']->original->mail;
+    }
+
     $language = ($recipient_account) ? user_preferred_language($recipient_account) : language_default();
 
     if (drupal_mail('email_change_trigger', 'action_send_email', $recipient, $language, $params)) {
