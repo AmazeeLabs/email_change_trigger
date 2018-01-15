@@ -122,6 +122,19 @@ function email_change_trigger_send_email_action_form($context) {
     'new_email_message' => 'This email address will be use going forward.',
   );
 
+  if (!empty($context['old_email']['subject'])) {
+    $context['old_email_subject'] = $context['old_email']['subject'];
+  }
+  if (!empty($context['old_email']['message'])) {
+    $context['old_email_message'] = $context['old_email']['message'];
+  }
+  if (!empty($context['new_email']['subject'])) {
+    $context['new_email_subject'] = $context['new_email']['subject'];
+  }
+  if (!empty($context['new_email']['message'])) {
+    $context['new_email_message'] = $context['new_email']['message'];
+  }
+
   $context += $defaults;
 
   $form['old_email'] = array(
