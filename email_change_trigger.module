@@ -153,6 +153,7 @@ function email_change_trigger_send_email_action_form($context) {
   $form['old_email']['old_email_message'] = array(
     '#type' => 'textarea',
     '#title' => t('Message'),
+    '#description' => t('You can use [old_email] and [new_email] and these will be replaced.'),
     '#default_value' => $context['old_email_message'],
   );
 
@@ -172,6 +173,7 @@ function email_change_trigger_send_email_action_form($context) {
   $form['new_email']['new_email_message'] = array(
     '#type' => 'textarea',
     '#title' => t('Message'),
+    '#description' => t('You can use [old_email] and [new_email] and these will be replaced.'),
     '#default_value' => $context['new_email_message'],
   );
 
@@ -224,6 +226,15 @@ function email_change_trigger_send_email_action($entity, $context) {
   foreach ($types as $type) {
     $params['subject'] = str_replace(array("\r", "\n"), '', token_replace($context[$type]['subject']));
     $params['body'] = token_replace($context[$type]['message']);
+
+    // Old and new email are not available via tokens so replace manually.
+    $params['body'] = str_replace(array(
+      '[old_email]',
+      '[new_email]'
+    ), array(
+      $context['recipient']->original->mail,
+      $context['recipient']->mail
+    ), $params['body']);
 
     if (empty($context['node'])) {
       $context['node'] = $entity;
